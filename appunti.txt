@@ -1,0 +1,7 @@
+per decomprimere un *.tar.xz il comando corretto è
+tar -Jxvf nomefile.tar.xz
+
+
+Install a package
+sudo dpkg -i DEB_PACKAGE
+
