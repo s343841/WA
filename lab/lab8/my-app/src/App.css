@@ -1,0 +1,19 @@
+#navv{
+    background-color: blue;
+    color: white;
+    display: flex;
+    justify-content: space-between;
+}
+.container-fluid .navbar-brand{
+    color: white;
+}
+.collapse{
+    justify-content: center;
+}
+
+.container-fluid .icon-container{
+    justify-content: end;
+}
+aside{
+    margin: 0px;
+}
