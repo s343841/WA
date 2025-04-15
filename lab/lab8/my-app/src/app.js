@@ -85,39 +85,4 @@ function deleteFilm(filmId) {
 export {Film,filterFilms}
 
 
-// --- Main --- //
-/*
-// Populate the list in the HTML ...
-createFilmList(films);
 
-//All filter by default green
-const allFilter = document.getElementById('all');
-allFilter.style.backgroundColor = 'green';
-allFilter.style.color = 'white';
-
-// Get all the list items in the list group
-const listItems = document.querySelectorAll('.list-group-item');
-
-// Loop through each item and add a click event listener
-listItems.forEach(item => {
-    item.addEventListener('click', event => {
-        console.log(`${item.textContent} clicked`);
-        // Reset the background color for all items
-        listItems.forEach(otherItem => {
-            otherItem.style.backgroundColor = '';  // Clear any previously set background color
-            otherItem.style.color = '';           // Reset text color
-            otherItem.classList.remove('active');
-        });
-
-        // Set the background color to green and text color to white for the clicked item
-        item.style.backgroundColor = 'green';
-        item.style.color = 'white';
-        item.classList.add('active');
-
-        clearTable(); // Clear the table before updating
-        const filteredFilms = filterFilms(films, item.textContent);
-        createFilmList(filteredFilms);
-
-    });
-});
-*/

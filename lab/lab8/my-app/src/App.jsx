@@ -3,21 +3,12 @@ import 'bootstrap-icons/font/bootstrap-icons.css';
 import { Col, Container, Row, Button, Form, Table, Navbar } from 'react-bootstrap';
 import './App.css';
 import { Film,filterFilms } from './app';
+import { useState } from 'react';
 
 const films = new Film();
 films.init();
 const FilmList = films.getFilms();
 
-const filters = {
-  'filter-all': { label: 'all', id: 'filter-all', filterFunction: ()=>filterFilms(FilmList,'All')},
-  'filter-favorite': { label: 'fav', id: 'filter-favorite', filterFunction: ()=>filterFilms(FilmList,'Favourite') },
-  'filter-best': { label: 'best', id: 'filter-best', filterFunction: ()=>filterFilms(FilmList,'Best Rated') },
-  'filter-lastmonth': { label: 'lastMonth', id: 'filter-lastmonth', filterFunction: ()=>filterFilms(FilmList,'Seen last month') },
-  'filter-unseen': { label: 'unseen', id: 'filter-unseen', filterFunction: ()=>filterFilms(FilmList,'Unseen') }
-};
-
-const activeFilter = 'filter-all'
-const filteredFilms = filters[activeFilter].filterFunction();
 
 function MyNav() {
   return (
@@ -47,24 +38,25 @@ function MyNav() {
     </Navbar >
   )
 }
-function MyAside() {
+function MyAside(props) {
+
   return (
     <aside className="col-4">
       <div className="list-group">
-        <a id="all" className={`list-group-item list-group-item-action 
-          ${activeFilter === 'filter-all' ? 'bg-success text-white' : ''}`}>All</a>
+        <a id="all" onClick={()=>props.setActiveFilter('filter-all')} className={`list-group-item list-group-item-action 
+          ${props.activeFilter === 'filter-all' ? 'bg-success text-white' : ''}`}>All</a>
 
-        <a id="fav" className={`list-group-item list-group-item-action
-           ${activeFilter === 'filter-favorite' ? 'bg-success text-white' : ''}`} >Favourite</a>
+        <a id="fav" onClick={()=>props.setActiveFilter('filter-favorite')} className={`list-group-item list-group-item-action
+           ${props.activeFilter === 'filter-favorite' ? 'bg-success text-white' : ''}`} >Favourite</a>
 
-        <a id="best" className={`list-group-item list-group-item-action 
-          ${activeFilter === 'filter-best' ? 'bg-success text-white' : ''}`}>Best Rated</a>
+        <a id="best" onClick={()=>props.setActiveFilter('filter-best')} className={`list-group-item list-group-item-action 
+          ${props.activeFilter === 'filter-best' ? 'bg-success text-white' : ''}`}>Best Rated</a>
 
-        <a id="lastMonth" className={`list-group-item list-group-item-action 
-          ${activeFilter === 'filter-lastmonth' ? 'bg-success text-white' : ''}`}>Seen last month</a>
+        <a id="lastMonth" onClick={()=>props.setActiveFilter('filter-lastmonth')} className={`list-group-item list-group-item-action 
+          ${props.activeFilter === 'filter-lastmonth' ? 'bg-success text-white' : ''}`}>Seen last month</a>
 
-        <a id="unseen" className={`list-group-item list-group-item-action 
-          ${activeFilter === 'filter-unseen' ? 'bg-success text-white' : ''}`}>Unseen</a>
+        <a id="unseen" onClick={()=>props.setActiveFilter('filter-unseen')} className={`list-group-item list-group-item-action 
+          ${props.activeFilter === 'filter-unseen' ? 'bg-success text-white' : ''}`}>Unseen</a>
       </div>
     </aside>
   )
@@ -90,6 +82,9 @@ function FilmRow(props) {
       </td>
       <td>{e.date ? e.date.format('YYYY-MM-DD') : ''}</td>
       <td>{stars}</td>
+      <td>
+        <Button className="mx-1" variant="danger" onClick={()=>props.delete(e.id)}><i className="bi bi-trash"></i></Button>
+      </td>
     </tr>
   );
 }
@@ -102,13 +97,14 @@ function MyTable(props) {
           <th>Favorite</th>
           <th>Last seen</th>
           <th>Rating</th>
+          <th>Action</th>
         </tr>
       </thead>
       <tbody id="films">
 
         {/* the key can also be the answer id, if unique */}
         {props.listOfFilms.map((e) =>
-          <FilmRow key={e.id} film={e} />)
+          <FilmRow key={e.id} film={e} delete={props.delete} />)
         }
 
       </tbody>
@@ -119,14 +115,27 @@ function MyTable(props) {
 
 
 
-function App() {
+function App(props) {
+  const [activeFilter,setActiveFilter] = useState('filter-all');
+  const [listOfFilms,setListOfFilms] = useState(FilmList);
+  function deleteFilm(id){
+    setListOfFilms(listOfFilms=>listOfFilms.filter(e=>e.id!==id))
+  }
+
+  const filters = {
+    'filter-all': { label: 'all', id: 'filter-all', filterFunction: ()=>filterFilms(listOfFilms,'All')},
+    'filter-favorite': { label: 'fav', id: 'filter-favorite', filterFunction: ()=>filterFilms(listOfFilms,'Favourite') },
+    'filter-best': { label: 'best', id: 'filter-best', filterFunction: ()=>filterFilms(listOfFilms,'Best Rated') },
+    'filter-lastmonth': { label: 'lastMonth', id: 'filter-lastmonth', filterFunction: ()=>filterFilms(listOfFilms,'Seen last month') },
+    'filter-unseen': { label: 'unseen', id: 'filter-unseen', filterFunction: ()=>filterFilms(listOfFilms,'Unseen') }
+  };
 
   return (
     <>
       <MyNav></MyNav>
       <Container className="container m-0">
         <div className="row justify-content-start">
-          <MyAside></MyAside>
+          <MyAside activeFilter={activeFilter} setActiveFilter={setActiveFilter}></MyAside>
           <div className="col-8">
             <Row >
               <div className="col-11">All</div>
@@ -134,7 +143,7 @@ function App() {
                 <button type="button" className="btn btn-primary">+</button>
               </div>
             </Row>
-            <MyTable listOfFilms={filteredFilms}></MyTable>
+            <MyTable listOfFilms={filters[activeFilter].filterFunction()} delete={deleteFilm}></MyTable>
           </div>
         </div>
       </Container>
