@@ -5,3 +5,14 @@ tar -Jxvf nomefile.tar.xz
 Install a package
 sudo dpkg -i DEB_PACKAGE
 
+
+lsof -i :3001
+kill <pid>
+
+
+sqlite3 forum.db < films_with_users.sql
+
+
+
+
+
